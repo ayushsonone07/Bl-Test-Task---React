@@ -50,26 +50,23 @@ function Dashboard() {
 
   // Fetching Data
   const [data, setData] = useState([]);
+  
+  useEffect(() => {
     const getCovidData = async () => {
-        try {
-            const response = await fetch('https://data.covid19india.org/v4/min/data.min.json');
-            const result = await response.json();
-            const selectedStateData = result[selectedState];
-            setData(selectedStateData);
-        } catch (error) {
-            console.log(error);
-        }
+      const response = await fetch('https://data.covid19india.org/v4/min/data.min.json');
+      const result = await response.json();
+      const selectedStateData = result[selectedState];
+      console.log(selectedStateData)
+      setData(selectedStateData);
     }
+    getCovidData();
+  }, [data])
 
-    useEffect(() => {
-        getCovidData();
-    }, [data])
+  // Destructuring Cases, deaths and recovery
+  const {deceased, confirmed, recovered} =  data?.total || {};
 
-    // Destructuring Cases, deaths and recovery
-    const {deceased, confirmed, recovered} =  data?.total || {};
-
-    //Destructuring metadata
-    const {date, last_updated, population} = data?.meta || {}
+  //Destructuring metadata
+  const {date, last_updated, population} = data?.meta || {}
 
   return (
     <>
