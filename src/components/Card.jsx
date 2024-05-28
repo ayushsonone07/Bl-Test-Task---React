@@ -1,10 +1,11 @@
+import '../App.css'
 import React from 'react'
 
-const Card = ({label, value, style}) => {
+const Card = ({label, value, color}) => {
   return (
-    <div className={style}>
+    <div className="card">
         <div className='card-label'>{label}</div>
-        <div className='card-value'>{value}</div>
+        <div className='card-value' style={{ color: color }}>{value}</div>
     </div>
   )
 }
