@@ -1,6 +1,8 @@
 import React,{ useEffect, useState } from 'react'
 import Card from './Card';
 import Dropdown from './Dropdown';
+import { Chart as ChartJs } from 'chart.js/auto';
+import {Bar} from "react-chartjs-2"
 
 const statesData = [
   { code: 'AP', name: 'Andhra Pradesh' },
@@ -45,46 +47,70 @@ function Dashboard() {
     setSelectedState(stateCode);
   };
 
+  // console.log(selectedState) 
   const [data, setData] = useState([]);
     const getCovidData = async () => {
         try {
-            // const response = await fetch('https://data.covid19india.org/v4/min/data.min.json');
+            const response = await fetch('https://data.covid19india.org/v4/min/data.min.json');
             const result = await response.json();
-            console.log(selectedState);
-            // setData(result.MP);
+            const selectedStateData = result[selectedState];
+            setData(selectedStateData);
         } catch (error) {
             console.log(error);
         }
     }
 
     useEffect(() => {
-        // getCovidData();
+        getCovidData();
     }, [data])
 
     const {deceased, confirmed, recovered} =  data?.total || {};
 
+    const {date, last_updated, population} = data?.meta || {}
+
   return (
     <>
-      <h4>COVID - 19 Dashboard <span>Select State : </span><span><Dropdown states={statesData} onSelect={handleStateSelect}/></span>Selected State: {selectedState}</h4>
+      <h1>COVID - 19 Dashboard </h1>
+      <h4><span>Select State : </span> <span><Dropdown states={statesData} onSelect={handleStateSelect} className="dropdown"/> </span></h4>
       <div className='container'>
         <section className='section-1'>
-          <h2 className='heading'>Total Data</h2>
+          <p><strong>Date</strong> : {date}     <strong>Last updated</strong> : {last_updated}     <strong>Population</strong> : {population}</p>
           <div className="card-container">
             <Card label="Cases" value={confirmed} color="blue"/>
             <Card label="Death"  value={deceased} color="red"/>
             <Card label="Recoverd" value={recovered} color="green"/>
           </div>
           <div className='card-2'>
-            Map
+            <Bar 
+                data={
+                  {
+                    labels: [selectedState],
+                    datasets: [
+                      {
+                        label: "cases",
+                        data: [confirmed],
+                        borderColor: '#36A2EB',
+                        backgroundColor: '#9BD0F5',
+                      },
+                      {
+                        label: "death",
+                        data: [deceased],
+                        borderColor: '#36A2EB',
+                        backgroundColor: '#FF3232',
+                      },
+                      {
+                        label: "recovered",
+                        data: [recovered],
+                        borderColor: '#36A2EB',
+                        backgroundColor: '#008080',
+                      }
+                    ],
+                  }
+                }
+            />
           </div>
         </section>
-        <section className='section-2'>
-            <h2 className='heading'>Live Data</h2>
-            <div className="card-container">
-              <div className='card-3'>
-              </div>
-            </div>
-        </section>
+        
       </div>
     </>
   )
