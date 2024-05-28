@@ -60,7 +60,7 @@ function Dashboard() {
       setData(selectedStateData);
     }
     getCovidData();
-  }, [data])
+  }, [selectedState])
 
   // Destructuring Cases, deaths and recovery
   const {deceased, confirmed, recovered} =  data?.total || {};
