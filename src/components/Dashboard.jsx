@@ -4,6 +4,7 @@ import Dropdown from './Dropdown';
 import { Chart as ChartJs } from 'chart.js/auto';
 import {Bar} from "react-chartjs-2"
 
+// States Data
 const statesData = [
   { code: 'AP', name: 'Andhra Pradesh' },
   { code: 'AR', name: 'Arunachal Pradesh' },
@@ -40,14 +41,14 @@ const statesData = [
 ];
 
 function Dashboard() {
-
+  // Dropdown Menu
   const [selectedState, setSelectedState] = useState('');
 
   const handleStateSelect = (stateCode) => {
     setSelectedState(stateCode);
   };
 
-  // console.log(selectedState) 
+  // Fetching Data
   const [data, setData] = useState([]);
     const getCovidData = async () => {
         try {
@@ -64,8 +65,10 @@ function Dashboard() {
         getCovidData();
     }, [data])
 
+    // Destructuring Cases, deaths and recovery
     const {deceased, confirmed, recovered} =  data?.total || {};
 
+    //Destructuring metadata
     const {date, last_updated, population} = data?.meta || {}
 
   return (
@@ -74,12 +77,18 @@ function Dashboard() {
       <h4><span>Select State : </span> <span><Dropdown states={statesData} onSelect={handleStateSelect} className="dropdown"/> </span></h4>
       <div className='container'>
         <section className='section-1'>
+
+          {/* Metadata */}
           <p><strong>Date</strong> : {date}     <strong>Last updated</strong> : {last_updated}     <strong>Population</strong> : {population}</p>
+
+          {/* Cards */}
           <div className="card-container">
             <Card label="Cases" value={confirmed} color="blue"/>
             <Card label="Death"  value={deceased} color="red"/>
             <Card label="Recoverd" value={recovered} color="green"/>
           </div>
+
+          {/* Graph */}
           <div className='card-2'>
             <Bar 
                 data={
